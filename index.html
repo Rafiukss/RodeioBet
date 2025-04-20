@@ -1,0 +1,128 @@
+import React, { useState } from "react";
+import { Card, CardContent } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+
+// Mock data for login
+const mockUsers = [
+  { username: "admin", password: "admin123", role: "admin" },
+  { username: "cowboy", password: "123456", role: "user" },
+];
+
+export default function RodeioBet() {
+  const [user, setUser] = useState(null);
+  const [form, setForm] = useState({ username: "", password: "" });
+
+  const login = () => {
+    const found = mockUsers.find(
+      (u) => u.username === form.username && u.password === form.password
+    );
+    if (found) setUser(found);
+    else alert("Usuário ou senha inválidos");
+  };
+
+  const logout = () => setUser(null);
+
+  const isAdmin = user?.role === "admin";
+
+  return (
+    <div className="min-h-screen bg-yellow-50 text-zinc-800 p-6">
+      <header className="text-center py-6 border-b border-zinc-300">
+        <h1 className="text-4xl font-bold text-red-700">RodeioBet</h1>
+        <p className="text-zinc-600">Aposte ao vivo nos melhores rodeios do Brasil!</p>
+      </header>
+
+      {!user ? (
+        <div className="max-w-sm mx-auto mt-10 bg-white p-6 rounded-xl shadow">
+          <h2 className="text-xl font-bold mb-4">Login</h2>
+          <input
+            type="text"
+            placeholder="Usuário"
+            className="border p-2 w-full mb-2 rounded"
+            value={form.username}
+            onChange={(e) => setForm({ ...form, username: e.target.value })}
+          />
+          <input
+            type="password"
+            placeholder="Senha"
+            className="border p-2 w-full mb-4 rounded"
+            value={form.password}
+            onChange={(e) => setForm({ ...form, password: e.target.value })}
+          />
+          <Button onClick={login} className="w-full">Entrar</Button>
+        </div>
+      ) : (
+        <main className="grid gap-6 mt-6">
+          <div className="flex justify-between items-center">
+            <h2 className="text-xl font-bold">Olá, {user.username}!</h2>
+            <Button onClick={logout}>Sair</Button>
+          </div>
+
+          {/* Conteúdo do painel de usuário */}
+          {!isAdmin ? (
+            <>
+              <section>
+                <h2 className="text-2xl font-semibold mb-4">Histórico de Apostas</h2>
+                <ul className="bg-white p-4 rounded shadow">
+                  <li className="mb-2">João Bala - R$ 50 em 18/04</li>
+                  <li className="mb-2">Zé da Arena - R$ 20 em 15/04</li>
+                </ul>
+              </section>
+            </>
+          ) : (
+            <>
+              {/* Painel Admin */}
+              <section>
+                <h2 className="text-2xl font-semibold mb-4">Painel Admin</h2>
+                <div className="grid md:grid-cols-2 gap-4">
+                  <div className="bg-white p-4 rounded shadow">
+                    <h3 className="font-bold">Cadastrar Novo Rodeio</h3>
+                    <input className="border p-2 w-full mt-2 mb-2 rounded" placeholder="Nome do rodeio" />
+                    <input className="border p-2 w-full mb-2 rounded" placeholder="Data" />
+                    <Button className="w-full">Cadastrar</Button>
+                  </div>
+                  <div className="bg-white p-4 rounded shadow">
+                    <h3 className="font-bold">Cadastrar Peão</h3>
+                    <input className="border p-2 w-full mt-2 mb-2 rounded" placeholder="Nome do peão" />
+                    <Button className="w-full">Cadastrar</Button>
+                  </div>
+                </div>
+              </section>
+            </>
+          )}
+
+          {/* Peões em Destaque */}
+          <section>
+            <h2 className="text-2xl font-semibold mb-4">Peões em Destaque</h2>
+            <ul className="grid md:grid-cols-4 gap-4">
+              {["Daniel Feitosa", "Zé da Arena", "Toninho Bruto", "Mateus Cowboy"].map((peao) => (
+                <li key={peao} className="bg-white border border-zinc-300 p-4 rounded-xl shadow">
+                  <img src={`/images/${peao.replace(" ", "-").toLowerCase()}.jpg`} alt={peao} className="w-full h-40 object-cover rounded-xl" />
+                  <h3 className="font-bold text-lg mt-4">{peao}</h3>
+                  <p className="text-sm text-zinc-600">Ranking: Top 10</p>
+                </li>
+              ))}
+            </ul>
+          </section>
+
+          {/* Touros em Destaque */}
+          <section>
+            <h2 className="text-2xl font-semibold mb-4">Touros em Destaque</h2>
+            <ul className="grid md:grid-cols-3 gap-4">
+              {["Bandido", "Tornado", "Apache"].map((touro) => (
+                <li key={touro} className="bg-white border border-zinc-300 p-4 rounded-xl shadow">
+                  <img src={`/images/${touro.toLowerCase()}.jpg`} alt={touro} className="w-full h-40 object-cover rounded-xl" />
+                  <h3 className="font-bold text-lg mt-4">{touro}</h3>
+                  <p className="text-sm text-zinc-600">Desempenho: Imbatível</p>
+                </li>
+              ))}
+            </ul>
+          </section>
+        </main>
+      )}
+
+      <footer className="mt-12 text-center text-sm text-zinc-500">
+        &copy; 2025 RodeioBet. Todos os direitos reservados.
+      </footer>
+    </div>
+  );
+}
